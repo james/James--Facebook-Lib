@@ -8,3 +8,15 @@ This is not a gem, as you will probably end up customising it to suit your needs
 It has specs - you will need webmock to get them working.
 
 Facebook api settings are kept separate to this project. You will need facebook_application_id, facebook_application_key and facebook_application_secret set somewhere (I usually use a yml file loaded by an initialiser).
+
+Example controller usage:
+
+def create
+  redirect_to FacebookAuthSession.facebook_auth_url(return_for_facebook_session_url, [:email, :offline_access])
+end
+
+def return_for
+  facebook_auth_session = FacebookAuthSession.new(:code => params[:code], :return_url => return_for_facebook_session_url)
+  facebook_auth_session.get_access_token
+  user = User.find_or_create_from_facebook_user_details(facebook_auth_session.get_user_details)
+end
